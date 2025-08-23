@@ -1,0 +1,5 @@
+{
+  "name": "GlossGen",
+  "description": "A hyper-modern, pitch-black themed web app that generates a code glossary from a GitHub repository URL, providing a filterable and searchable list of functions, classes, and variables.",
+  "requestFramePermissions": []
+}
