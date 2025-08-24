@@ -46,9 +46,6 @@ const HomePage: React.FC = () => {
         <p className="text-gray-400 mb-8 max-w-md mx-auto">
           Generate a fully-searchable code glossary from any public GitHub repository.
         </p>
-        <p className="text-gray-400 mb-8 max-w-md mx-auto">
-          By-Tanmay Galav
-        </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input

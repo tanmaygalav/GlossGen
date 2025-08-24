@@ -1,10 +1,6 @@
 import React, { useRef } from 'react';
-import { Canvas, useFrame, extend } from '@react-three/fiber';
-import { Mesh, DodecahedronGeometry, MeshBasicMaterial, AmbientLight, DirectionalLight } from 'three';
-
-// This resolves TypeScript errors when the automatic JSX augmentation fails by
-// explicitly making `three` objects available as JSX elements.
-extend({ Mesh, DodecahedronGeometry, MeshBasicMaterial, AmbientLight, DirectionalLight });
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Mesh } from 'three';
 
 function Dodecahedron() {
   const meshRef = useRef<Mesh>(null!);

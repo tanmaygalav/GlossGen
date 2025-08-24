@@ -58,6 +58,38 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
     const repoDetails = await repoDetailsRes.json();
     const defaultBranch = repoDetails.default_branch;
 
+    // Fetch real commit count from GitHub API
+    let commitCount = 0;
+    try {
+        const commitsRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits?per_page=1`);
+        if (commitsRes.ok) {
+            const linkHeader = commitsRes.headers.get('Link');
+            let countFromHeader = 0;
+            if (linkHeader) {
+                const lastLink = linkHeader.split(',').find(s => s.includes('rel="last"'));
+                if (lastLink) {
+                    const match = lastLink.match(/[?&]page=(\d+)/);
+                    if (match) {
+                        countFromHeader = parseInt(match[1], 10);
+                    }
+                }
+            }
+
+            if (countFromHeader > 0) {
+                commitCount = countFromHeader;
+            } else {
+                 // No header or parsing failed; must be 0 or 1 commits.
+                 const commitsData = await commitsRes.json();
+                 if (Array.isArray(commitsData)) {
+                     commitCount = commitsData.length;
+                 }
+            }
+        }
+    } catch (e) {
+        console.error("Failed to fetch commit count from GitHub API, it will be 0.", e);
+        // commitCount will remain 0
+    }
+
     const treeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees/${defaultBranch}?recursive=1`);
      if (!treeRes.ok) throw new Error(`Failed to fetch repository file tree. GitHub API status: ${treeRes.status}`);
     const treeData = await treeRes.json();
@@ -100,7 +132,6 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
         Your analysis should include:
         - techStack: Identify the main languages, frameworks, and significant libraries.
         - fileStructureSummary: A concise, one-paragraph summary of the repository's architecture.
-        - commitCount: Provide a reasonable *estimate* of the total commit count based on the repository's size, complexity, and apparent maturity.
         - starRating: A rating from 1.0 to 5.0, assessing the code's quality, clarity, and organization from the samples provided.
         - items: A glossary of up to 20 of the most important and representative functions, classes, or variables from the provided code.
     `;
@@ -110,7 +141,6 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
       properties: {
         techStack: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of technologies used." },
         fileStructureSummary: { type: Type.STRING, description: "A summary of the file structure." },
-        commitCount: { type: Type.INTEGER, description: "Estimated number of commits." },
         starRating: { type: Type.NUMBER, description: "A quality rating from 1.0 to 5.0." },
         items: {
           type: Type.ARRAY,
@@ -126,7 +156,7 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
           },
         },
       },
-      required: ['techStack', 'fileStructureSummary', 'commitCount', 'starRating', 'items'],
+      required: ['techStack', 'fileStructureSummary', 'starRating', 'items'],
     };
 
     try {
@@ -147,7 +177,7 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
             items: analysis.items || [],
             techStack: analysis.techStack || [],
             fileStructureSummary: analysis.fileStructureSummary || 'No summary generated.',
-            commitCount: analysis.commitCount || 0,
+            commitCount: commitCount,
             starRating: analysis.starRating || 0,
         };
 
