@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { analyzeRepo } from '../services/githubService';
 import { GlossaryItemType, type AnalysisResult, type GlossaryItem } from '../types';
 
@@ -80,6 +80,7 @@ const RepoSummary: React.FC<{ result: AnalysisResult }> = ({ result }) => (
 
 const ResultsPage: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const repoUrl = searchParams.get('repo') || '';
 
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
@@ -190,66 +191,86 @@ const ResultsPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-8">
-      <header className="mb-8">
-        <p className="text-gray-500">Glossary For</p>
-        <h1 className="text-3xl sm:text-4xl font-bold break-all mb-4">{analysisResult?.repoName}</h1>
-        {analysisResult && <RepoSummary result={analysisResult} />}
+      <header className="mb-8 flex justify-between items-center">
+        <Link to="/" className="text-2xl font-bold tracking-tighter hover:text-accent transition-colors">
+            GlossGen
+        </Link>
+        <button 
+            onClick={() => navigate(-1)} 
+            className="flex items-center gap-2 bg-gray-800 text-white font-bold py-2 px-4 hover:bg-gray-700 transition-colors border border-gray-700 text-sm"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back
+        </button>
       </header>
 
-      <div className="sticky top-0 z-10 bg-black/80 backdrop-blur-md py-4 mb-8 border-b border-gray-800">
-        <div className="flex flex-col md:flex-row gap-4">
-            <input
-                type="text"
-                placeholder="Search by name or path..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-grow bg-black border border-gray-800 text-white p-3 focus:outline-none focus:border-accent font-mono text-sm"
-            />
-            <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm text-gray-500 hidden md:block">Filter:</span>
-                {Object.values(GlossaryItemType).map(type => (
-                    <button
-                        key={type}
-                        onClick={() => toggleFilter(type)}
-                        className={`border px-3 py-2 text-sm transition-colors ${
-                            activeFilters.includes(type)
-                                ? 'bg-accent text-black border-accent'
-                                : 'bg-black text-white border-gray-800 hover:border-gray-600'
-                        }`}
-                    >
-                        {type}s
-                    </button>
-                ))}
-            </div>
-            <button
-                onClick={exportToMarkdown}
-                className="bg-gray-800 text-white font-bold p-3 px-6 hover:bg-gray-700 focus:outline-none transition-colors border border-gray-800"
-            >
-                Export MD
-            </button>
+      <main>
+        <div className="mb-8">
+            <p className="text-gray-500">Glossary For</p>
+            <h1 className="text-3xl sm:text-4xl font-bold break-all mb-4">{analysisResult?.repoName}</h1>
+            {analysisResult && <RepoSummary result={analysisResult} />}
         </div>
-      </div>
+      
+        <div className="sticky top-0 z-10 bg-black/80 backdrop-blur-md py-4 mb-8 border-y border-gray-800">
+            <div className="flex flex-col md:flex-row gap-4">
+                <input
+                    type="text"
+                    placeholder="Search by name or path..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="flex-grow bg-black border border-gray-800 text-white p-3 focus:outline-none focus:border-accent font-mono text-sm"
+                />
+                <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm text-gray-500 hidden md:block">Filter:</span>
+                    {Object.values(GlossaryItemType).map(type => (
+                        <button
+                            key={type}
+                            onClick={() => toggleFilter(type)}
+                            className={`border px-3 py-2 text-sm transition-colors ${
+                                activeFilters.includes(type)
+                                    ? 'bg-accent text-black border-accent'
+                                    : 'bg-black text-white border-gray-800 hover:border-gray-600'
+                            }`}
+                        >
+                            {type}s
+                        </button>
+                    ))}
+                </div>
+                <button
+                    onClick={exportToMarkdown}
+                    className="bg-gray-800 text-white font-bold p-3 px-6 hover:bg-gray-700 focus:outline-none transition-colors border border-gray-800"
+                >
+                    Export MD
+                </button>
+            </div>
+        </div>
 
-      <div className="space-y-2">
-        {filteredItems.length > 0 ? (
-          filteredItems.map((item, index) => (
-            <div key={`${item.name}-${index}`} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border border-gray-800 bg-gray-900/20 hover:border-gray-700 transition-colors">
-              <div className="flex-1 mb-2 sm:mb-0">
-                <h3 className="font-mono font-bold text-accent">{item.name}</h3>
-                <p className="font-mono text-sm text-gray-500 break-all">{item.path}</p>
-              </div>
-              <div className="flex-shrink-0">
-                <TypeBadge type={item.type} />
-              </div>
-            </div>
-          ))
-        ) : (
-            <div className="text-center py-16 border border-dashed border-gray-800">
-                <p className="text-gray-500">No results found.</p>
-                <p className="text-sm text-gray-600">Try adjusting your search or filters.</p>
-            </div>
-        )}
-      </div>
+        <div className="space-y-2">
+            {filteredItems.length > 0 ? (
+            filteredItems.map((item, index) => (
+                <div key={`${item.name}-${index}`} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border border-gray-800 bg-gray-900/20 hover:border-gray-700 transition-colors">
+                <div className="flex-1 mb-2 sm:mb-0">
+                    <h3 className="font-mono font-bold text-accent">{item.name}</h3>
+                    <p className="font-mono text-sm text-gray-500 break-all">{item.path}</p>
+                </div>
+                <div className="flex-shrink-0">
+                    <TypeBadge type={item.type} />
+                </div>
+                </div>
+            ))
+            ) : (
+                <div className="text-center py-16 border border-dashed border-gray-800">
+                    <p className="text-gray-500">No results found.</p>
+                    <p className="text-sm text-gray-600">Try adjusting your search or filters.</p>
+                </div>
+            )}
+        </div>
+      </main>
+      <footer className="text-center py-8 mt-12 border-t border-gray-800 text-gray-600 text-xs font-mono">
+        <p>&copy; {new Date().getFullYear()} Tanmay galav. All Rights Reserved.</p>
+      </footer>
     </div>
   );
 };

@@ -1,9 +1,9 @@
-import React, { useRef } from 'react';
+import * as React from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Mesh } from 'three';
 
 function Dodecahedron() {
-  const meshRef = useRef<Mesh>(null!);
+  const meshRef = React.useRef<Mesh>(null!);
   useFrame(() => {
     if (meshRef.current) {
       meshRef.current.rotation.x += 0.001;

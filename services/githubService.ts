@@ -1,5 +1,6 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
-import { type AnalysisResult } from '../types';
+import { type AnalysisResult, type ProfileAnalysisResult, type LanguageDistribution, type RepoInfo } from '../types';
 
 // Helper to decode base64 content from GitHub API
 function b64Decode(str: string): string {
@@ -184,5 +185,129 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
     } catch (err) {
         console.error("Gemini API Error:", err);
         throw new Error("Failed to analyze the repository. The AI model may be temporarily unavailable or returned an unexpected response.");
+    }
+};
+
+export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysisResult> => {
+    // 1. Parse Username from GitHub URL
+    let username: string;
+    try {
+        const url = new URL(profileUrl);
+        if (url.hostname !== 'github.com') {
+            throw new Error('Invalid GitHub URL. Hostname must be github.com.');
+        }
+        const pathParts = url.pathname.split('/').filter(Boolean);
+        if (pathParts.length < 1) {
+            throw new Error('Invalid profile path in URL.');
+        }
+        [username] = pathParts;
+    } catch (error) {
+        throw new Error('Invalid URL format. Please enter a valid GitHub profile URL.');
+    }
+
+    // 2. Fetch User and Repository Data from GitHub API
+    const userRes = await fetch(`https://api.github.com/users/${username}`);
+    if (!userRes.ok) {
+        if (userRes.status === 404) throw new Error("User not found. Check the username.");
+        throw new Error(`Failed to fetch user details. GitHub API status: ${userRes.status}`);
+    }
+    const user = await userRes.json();
+
+    const reposRes = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=pushed`);
+    if (!reposRes.ok) throw new Error(`Failed to fetch repositories. GitHub API status: ${reposRes.status}`);
+    const repos = (await reposRes.json()).filter((r: any) => !r.fork); // Exclude forks
+
+    // 3. Process GitHub Data
+    let totalStars = 0;
+    const languageDistribution: LanguageDistribution = {};
+
+    for (const repo of repos) {
+        totalStars += repo.stargazers_count;
+        if (repo.language) {
+            languageDistribution[repo.language] = (languageDistribution[repo.language] || 0) + 1;
+        }
+    }
+
+    const topRepos = [...repos]
+        .sort((a, b) => b.stargazers_count - a.stargazers_count)
+        .slice(0, 10)
+        .map((repo: any): RepoInfo => ({
+            name: repo.full_name,
+            description: repo.description,
+            stars: repo.stargazers_count,
+            language: repo.language,
+            url: repo.html_url
+        }));
+
+    // 4. Perform Analysis with the Gemini API
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    
+    const prompt = `
+        You are an expert GitHub profile analyst. I will provide you with data about a user, including their profile information, a list of their top repositories, and their language usage. Your task is to analyze this information and return a comprehensive summary in JSON format.
+
+        User Profile:
+        - Username: ${user.login}
+        - Name: ${user.name}
+        - Bio: ${user.bio}
+        - Followers: ${user.followers}
+        - Public Repos: ${user.public_repos}
+        - Member Since: ${user.created_at}
+
+        Top Repositories (by stars):
+        ${topRepos.map(r => `- ${r.name} (Stars: ${r.stars}, Language: ${r.language}): ${r.description}`).join('\n')}
+
+        Language Distribution (by count of repositories):
+        ${JSON.stringify(languageDistribution, null, 2)}
+
+        Based on all the provided information, generate a JSON object that strictly follows the schema I provide.
+
+        Your analysis should include:
+        - profileSummary: A concise, one-paragraph summary of the developer's profile. Mention their apparent interests, activity level, and the types of projects they work on.
+        - starRating: A rating from 1.0 to 5.0, assessing the overall quality and impact of the profile based on the provided data (repo popularity, activity, profile completeness).
+        - mainExpertise: A list of 2-4 key areas of expertise (e.g., "Frontend Development", "React", "Data Science", "Go").
+    `;
+
+    const schema = {
+        type: Type.OBJECT,
+        properties: {
+            profileSummary: { type: Type.STRING, description: "A summary of the developer's profile." },
+            starRating: { type: Type.NUMBER, description: "A quality rating from 1.0 to 5.0." },
+            mainExpertise: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of key expertise areas." },
+        },
+        required: ['profileSummary', 'starRating', 'mainExpertise'],
+    };
+
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: schema,
+            },
+        });
+
+        const analysis = JSON.parse(response.text);
+
+        return {
+            login: user.login,
+            name: user.name,
+            avatarUrl: user.avatar_url,
+            bio: user.bio,
+            followers: user.followers,
+            following: user.following,
+            publicRepoCount: user.public_repos,
+            createdAt: user.created_at,
+            totalStars,
+            topRepos,
+            languageDistribution,
+            profileSummary: analysis.profileSummary || 'No summary generated.',
+            starRating: analysis.starRating || 0,
+            mainExpertise: analysis.mainExpertise || [],
+        };
+
+    } catch (err) {
+        console.error("Gemini API Error:", err);
+        throw new Error("Failed to analyze the profile. The AI model may be temporarily unavailable or returned an unexpected response.");
     }
 };
