@@ -62,23 +62,23 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden p-4">
-      <div className="absolute top-0 left-0 w-full h-full z-0 opacity-50">
+      <div className="absolute top-0 left-0 w-full h-full z-0">
         <Scene />
       </div>
 
-      <div className="relative z-10 w-full max-w-2xl bg-black/50 backdrop-blur-sm border border-gray-800 p-8 sm:p-12 text-center">
-        <h1 className="text-4xl sm:text-6xl font-bold tracking-tighter mb-4">
+      <div className="relative z-10 w-full max-w-2xl bg-gray-950/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6 sm:p-10 text-center">
+        <h1 className="text-4xl sm:text-6xl font-bold tracking-tighter mb-4" style={{textShadow: '0 0 15px rgba(255, 255, 255, 0.2)'}}>
           GlossGen
         </h1>
-        <p className="text-gray-400 mb-8 max-w-md mx-auto">
+        <p className="text-gray-300 mb-8 max-w-md mx-auto">
           Generate a fully-searchable code glossary from any public GitHub repository or analyze a developer's profile.
         </p>
 
-        <div className="flex justify-center mb-6 border border-gray-800 p-1">
-            <button onClick={() => setAnalysisType('repo')} className={`w-full p-2 text-sm font-bold transition-colors duration-200 ${isRepoMode ? 'bg-accent text-black' : 'bg-transparent text-white hover:bg-gray-900'}`}>
+        <div className="flex justify-center mb-8 bg-black/20 border border-white/10 rounded-full p-1 max-w-sm mx-auto">
+            <button onClick={() => setAnalysisType('repo')} className={`w-full p-2 text-sm font-bold rounded-full transition-all duration-300 ${isRepoMode ? 'bg-accent text-black shadow-md shadow-accent/30' : 'bg-transparent text-white hover:bg-white/5'}`}>
                 Repository
             </button>
-            <button onClick={() => setAnalysisType('profile')} className={`w-full p-2 text-sm font-bold transition-colors duration-200 ${!isRepoMode ? 'bg-accent text-black' : 'bg-transparent text-white hover:bg-gray-900'}`}>
+            <button onClick={() => setAnalysisType('profile')} className={`w-full p-2 text-sm font-bold rounded-full transition-all duration-300 ${!isRepoMode ? 'bg-accent text-black shadow-md shadow-accent/30' : 'bg-transparent text-white hover:bg-white/5'}`}>
                 Profile
             </button>
         </div>
@@ -89,20 +89,25 @@ const HomePage: React.FC = () => {
             value={currentUrl}
             onChange={(e) => setUrl(e.target.value)}
             placeholder={placeholder}
-            className="w-full bg-black border border-gray-800 text-white p-4 focus:outline-none focus:border-accent font-mono text-sm"
+            className="w-full bg-black/40 border border-white/10 text-white p-4 rounded-lg focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/50 font-mono text-sm transition-all duration-300"
             disabled={isLoading}
             aria-label={`GitHub ${isRepoMode ? 'Repository' : 'Profile'} URL`}
           />
-          {error && <p className="text-red-500 text-sm text-left">{error}</p>}
+          {error && <p className="text-red-400 text-sm text-left">{error}</p>}
           <button
             type="submit"
-            className="w-full bg-accent text-black font-bold p-4 hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black transition-colors duration-200 disabled:bg-gray-700 disabled:cursor-not-allowed"
+            className="w-full bg-accent text-black font-bold p-4 rounded-lg shadow-lg shadow-accent/20 hover:bg-orange-400 hover:shadow-xl hover:shadow-accent/40 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300 ease-in-out transform hover:scale-[1.02] disabled:bg-gray-700 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none"
             disabled={isLoading}
           >
-            {isLoading ? 'Analyzing...' : `Analyze ${isRepoMode ? 'Repository' : 'Profile'}`}
+            {isLoading ? (
+                <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 border-2 border-black/50 border-t-black rounded-full animate-spin mr-2"></div>
+                    Analyzing...
+                </div>
+            ) : `Analyze ${isRepoMode ? 'Repository' : 'Profile'}`}
           </button>
         </form>
-        <p className="text-xs text-gray-600 mt-8 font-mono">
+        <p className="text-xs text-gray-500 mt-8 font-mono">
           &copy; {new Date().getFullYear()} Tanmay galav.
         </p>
       </div>

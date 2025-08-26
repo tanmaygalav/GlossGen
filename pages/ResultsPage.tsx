@@ -19,7 +19,7 @@ const TypeBadge: React.FC<{ type: GlossaryItemType }> = ({ type }) => {
     [GlossaryItemType.Variable]: 'bg-green-900/50 text-green-300 border-green-700',
   };
   return (
-    <span className={`px-2 py-1 text-xs font-mono border ${colors[type]}`}>
+    <span className={`px-2 py-1 text-xs font-mono border rounded-md ${colors[type]}`}>
       {type}
     </span>
   );
@@ -51,26 +51,26 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
 
 const RepoSummary: React.FC<{ result: AnalysisResult }> = ({ result }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="border border-gray-800 bg-gray-900/20 p-4">
+        <div className="border border-gray-800 bg-gray-900/20 p-4 rounded-lg">
             <h4 className="text-sm font-bold text-gray-500 mb-2 tracking-wider uppercase">Rating</h4>
             <div className="flex items-center gap-2">
                 <StarRating rating={result.starRating} />
                 <span className="text-xl font-mono font-bold">{result.starRating.toFixed(1)}</span>
             </div>
         </div>
-        <div className="border border-gray-800 bg-gray-900/20 p-4">
+        <div className="border border-gray-800 bg-gray-900/20 p-4 rounded-lg">
             <h4 className="text-sm font-bold text-gray-500 mb-2 tracking-wider uppercase">Commits</h4>
             <p className="text-2xl font-bold font-mono">{result.commitCount.toLocaleString()}</p>
         </div>
-        <div className="border border-gray-800 bg-gray-900/20 p-4 col-span-1 md:col-span-2 lg:col-span-1">
+        <div className="border border-gray-800 bg-gray-900/20 p-4 col-span-1 md:col-span-2 lg:col-span-1 rounded-lg">
              <h4 className="text-sm font-bold text-gray-500 mb-2 tracking-wider uppercase">Tech Stack</h4>
              <div className="flex flex-wrap gap-2 pt-1">
                 {result.techStack.map(tech => (
-                    <span key={tech} className="bg-gray-800 text-gray-300 text-xs font-mono px-2 py-1 border border-gray-700">{tech}</span>
+                    <span key={tech} className="bg-gray-800 text-gray-300 text-xs font-mono px-2 py-1 border border-gray-700 rounded-md">{tech}</span>
                 ))}
              </div>
         </div>
-        <div className="border border-gray-800 bg-gray-900/20 p-4 col-span-1 md:col-span-2 lg:col-span-1">
+        <div className="border border-gray-800 bg-gray-900/20 p-4 col-span-1 md:col-span-2 lg:col-span-1 rounded-lg">
              <h4 className="text-sm font-bold text-gray-500 mb-2 tracking-wider uppercase">File Structure</h4>
              <p className="text-sm text-gray-400">{result.fileStructureSummary}</p>
         </div>
@@ -181,7 +181,7 @@ const ResultsPage: React.FC = () => {
         <div>
           <h2 className="text-2xl text-red-500">Analysis Failed</h2>
           <p className="text-gray-400 mt-2">{error}</p>
-          <a href="/#" className="mt-6 inline-block bg-accent text-black font-bold p-3 px-6 hover:bg-white transition-colors">
+          <a href="/#" className="mt-6 inline-block bg-accent text-black font-bold p-3 px-6 hover:bg-white transition-colors rounded-lg">
             Try Again
           </a>
         </div>
@@ -197,7 +197,7 @@ const ResultsPage: React.FC = () => {
         </Link>
         <button 
             onClick={() => navigate(-1)} 
-            className="flex items-center gap-2 bg-gray-800 text-white font-bold py-2 px-4 hover:bg-gray-700 transition-colors border border-gray-700 text-sm"
+            className="flex items-center gap-2 bg-gray-800 text-white font-bold py-2 px-4 hover:bg-gray-700 transition-colors border border-gray-700 text-sm rounded-lg"
         >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -213,14 +213,14 @@ const ResultsPage: React.FC = () => {
             {analysisResult && <RepoSummary result={analysisResult} />}
         </div>
       
-        <div className="sticky top-0 z-10 bg-black/80 backdrop-blur-md py-4 mb-8 border-y border-gray-800">
+        <div className="sticky top-0 z-10 bg-[#0a0a0a]/80 backdrop-blur-md py-4 mb-8 border-y border-gray-800">
             <div className="flex flex-col md:flex-row gap-4">
                 <input
                     type="text"
                     placeholder="Search by name or path..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="flex-grow bg-black border border-gray-800 text-white p-3 focus:outline-none focus:border-accent font-mono text-sm"
+                    className="flex-grow bg-black border border-gray-800 text-white p-3 focus:outline-none focus:border-accent font-mono text-sm rounded-lg"
                 />
                 <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm text-gray-500 hidden md:block">Filter:</span>
@@ -228,7 +228,7 @@ const ResultsPage: React.FC = () => {
                         <button
                             key={type}
                             onClick={() => toggleFilter(type)}
-                            className={`border px-3 py-2 text-sm transition-colors ${
+                            className={`border px-3 py-2 text-sm transition-colors rounded-md ${
                                 activeFilters.includes(type)
                                     ? 'bg-accent text-black border-accent'
                                     : 'bg-black text-white border-gray-800 hover:border-gray-600'
@@ -240,7 +240,7 @@ const ResultsPage: React.FC = () => {
                 </div>
                 <button
                     onClick={exportToMarkdown}
-                    className="bg-gray-800 text-white font-bold p-3 px-6 hover:bg-gray-700 focus:outline-none transition-colors border border-gray-800"
+                    className="bg-gray-800 text-white font-bold p-3 px-6 hover:bg-gray-700 focus:outline-none transition-colors border border-gray-800 rounded-lg"
                 >
                     Export MD
                 </button>
@@ -250,7 +250,7 @@ const ResultsPage: React.FC = () => {
         <div className="space-y-2">
             {filteredItems.length > 0 ? (
             filteredItems.map((item, index) => (
-                <div key={`${item.name}-${index}`} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border border-gray-800 bg-gray-900/20 hover:border-gray-700 transition-colors">
+                <div key={`${item.name}-${index}`} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border border-gray-800 bg-gray-900/20 hover:border-gray-700 transition-colors rounded-lg">
                 <div className="flex-1 mb-2 sm:mb-0">
                     <h3 className="font-mono font-bold text-accent">{item.name}</h3>
                     <p className="font-mono text-sm text-gray-500 break-all">{item.path}</p>
@@ -261,7 +261,7 @@ const ResultsPage: React.FC = () => {
                 </div>
             ))
             ) : (
-                <div className="text-center py-16 border border-dashed border-gray-800">
+                <div className="text-center py-16 border border-dashed border-gray-800 rounded-lg">
                     <p className="text-gray-500">No results found.</p>
                     <p className="text-sm text-gray-600">Try adjusting your search or filters.</p>
                 </div>

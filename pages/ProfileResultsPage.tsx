@@ -79,7 +79,7 @@ const LanguageChart: React.FC<{ languages: LanguageDistribution }> = ({ language
             {sortedLanguages.map(lang => (
                 <div key={lang.name} className="flex items-center gap-4">
                     <div className="w-28 text-sm text-gray-300 truncate font-mono">{lang.name}</div>
-                    <div className="flex-1 bg-gray-800 h-4 border border-gray-700">
+                    <div className="flex-1 bg-gray-800 h-4 border border-gray-700 rounded-full overflow-hidden">
                         <div
                             className="h-full"
                             style={{ width: `${lang.percentage}%`, backgroundColor: lang.color }}
@@ -143,7 +143,7 @@ const ProfileResultsPage: React.FC = () => {
                 <div>
                     <h2 className="text-2xl text-red-500">Analysis Failed</h2>
                     <p className="text-gray-400 mt-2">{error}</p>
-                    <a href="/#" className="mt-6 inline-block bg-accent text-black font-bold p-3 px-6 hover:bg-white transition-colors">
+                    <a href="/#" className="mt-6 inline-block bg-accent text-black font-bold p-3 px-6 hover:bg-white transition-colors rounded-lg">
                         Try Again
                     </a>
                 </div>
@@ -168,7 +168,7 @@ const ProfileResultsPage: React.FC = () => {
                 </Link>
                 <button 
                     onClick={() => navigate(-1)} 
-                    className="flex items-center gap-2 bg-gray-800 text-white font-bold py-2 px-4 hover:bg-gray-700 transition-colors border border-gray-700 text-sm"
+                    className="flex items-center gap-2 bg-gray-800 text-white font-bold py-2 px-4 hover:bg-gray-700 transition-colors border border-gray-700 text-sm rounded-lg"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -180,7 +180,7 @@ const ProfileResultsPage: React.FC = () => {
             <main>
                 {/* Profile Header */}
                 <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8 mb-12">
-                    <img src={avatarUrl} alt={login} className="w-32 h-32 sm:w-40 sm:h-40 border-4 border-gray-800" />
+                    <img src={avatarUrl} alt={login} className="w-32 h-32 sm:w-40 sm:h-40 border-4 border-gray-800 rounded-2xl" />
                     <div className="flex-1">
                         <h1 className="text-3xl sm:text-4xl font-bold">{name || login}</h1>
                         <p className="text-xl text-gray-500 font-mono">@{login}</p>
@@ -197,11 +197,11 @@ const ProfileResultsPage: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Column */}
                     <div className="lg:col-span-2 space-y-8">
-                        <div className="border border-gray-800 bg-gray-900/20 p-6">
+                        <div className="border border-gray-800 bg-gray-900/20 p-6 rounded-xl">
                             <h2 className="text-sm font-bold text-gray-500 tracking-wider uppercase mb-4">AI Summary</h2>
                             <p className="text-gray-300 leading-relaxed">{profileSummary}</p>
                         </div>
-                         <div className="border border-gray-800 bg-gray-900/20 p-6">
+                         <div className="border border-gray-800 bg-gray-900/20 p-6 rounded-xl">
                             <h2 className="text-sm font-bold text-gray-500 tracking-wider uppercase mb-4">Top Repositories</h2>
                             <div className="space-y-4">
                                 {topRepos.map(repo => (
@@ -214,7 +214,7 @@ const ProfileResultsPage: React.FC = () => {
                                             </div>
                                         </div>
                                         <p className="text-sm text-gray-400 mt-1 mb-2 truncate">{repo.description}</p>
-                                        {repo.language && <span className="text-xs font-mono px-2 py-1 border" style={{ color: LANGUAGE_COLORS[repo.language] || '#FFF', borderColor: LANGUAGE_COLORS[repo.language] || '#6e6e6e' }}>{repo.language}</span>}
+                                        {repo.language && <span className="text-xs font-mono px-2.5 py-1 border rounded-full" style={{ color: LANGUAGE_COLORS[repo.language] || '#FFF', borderColor: LANGUAGE_COLORS[repo.language] || '#6e6e6e' }}>{repo.language}</span>}
                                     </div>
                                 ))}
                             </div>
@@ -222,22 +222,22 @@ const ProfileResultsPage: React.FC = () => {
                     </div>
                     {/* Right Column */}
                     <div className="space-y-8">
-                         <div className="border border-gray-800 bg-gray-900/20 p-6">
+                         <div className="border border-gray-800 bg-gray-900/20 p-6 rounded-xl">
                             <h2 className="text-sm font-bold text-gray-500 tracking-wider uppercase mb-4">Profile Rating</h2>
                             <div className="flex items-center gap-3">
                                 <StarRating rating={starRating} />
                                 <span className="text-3xl font-mono font-bold">{starRating.toFixed(1)}</span>
                             </div>
                         </div>
-                        <div className="border border-gray-800 bg-gray-900/20 p-6">
+                        <div className="border border-gray-800 bg-gray-900/20 p-6 rounded-xl">
                             <h2 className="text-sm font-bold text-gray-500 tracking-wider uppercase mb-4">Main Expertise</h2>
                             <div className="flex flex-wrap gap-2">
                                 {mainExpertise.map(tech => (
-                                    <span key={tech} className="bg-gray-800 text-gray-300 text-sm font-mono px-3 py-1 border border-gray-700">{tech}</span>
+                                    <span key={tech} className="bg-gray-800 text-gray-300 text-sm font-mono px-3 py-1 border border-gray-700 rounded-md">{tech}</span>
                                 ))}
                             </div>
                         </div>
-                        <div className="border border-gray-800 bg-gray-900/20 p-6">
+                        <div className="border border-gray-800 bg-gray-900/20 p-6 rounded-xl">
                             <h2 className="text-sm font-bold text-gray-500 tracking-wider uppercase mb-4">Language Breakdown</h2>
                             <LanguageChart languages={languageDistribution} />
                         </div>
