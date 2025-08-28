@@ -114,7 +114,7 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
     );
 
     // 3. Perform Analysis with the Gemini API
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.GEMINI_API_KEY});
 
     const prompt = `
         You are an expert code analyst. I will provide you with the file structure and the content of several key source files from a GitHub repository. Your task is to analyze this information and return a comprehensive summary in JSON format.
