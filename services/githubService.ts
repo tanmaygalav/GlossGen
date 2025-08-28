@@ -1,6 +1,5 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
-import { type AnalysisResult, type ProfileAnalysisResult, type LanguageDistribution, type RepoInfo } from '../types';
+import { type AnalysisResult, type ProfileAnalysisResult, type LanguageDistribution, type RepoInfo, type Badge } from '../types';
 
 // Helper to decode base64 content from GitHub API
 function b64Decode(str: string): string {
@@ -188,6 +187,16 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
     }
 };
 
+const ALL_BADGES: Omit<Badge, 'earned'>[] = [
+    { id: 'POLYGLOT', name: 'Polyglot', description: 'Use 5 or more distinct languages in public repositories.' },
+    { id: 'STAR_GAZER', name: 'Star Gazer', description: 'Own a repository with 100+ stars.' },
+    { id: 'COMMIT_MACHINE', name: 'Commit Machine', description: 'Make over 500 commits in the last year.' },
+    { id: 'PERFECT_README', name: 'Perfect Readme', description: 'Have at least one repository with an AI-rated quality score of 90+.' },
+    { id: 'COMMUNITY_BUILDER', name: 'Community Builder', description: 'Own a repository with 25+ forks.' },
+    { id: 'TOP_10_PERCENT', name: 'Top 10%', description: 'Have a profile health score of 90 or higher.' },
+];
+
+
 export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysisResult> => {
     // 1. Parse Username from GitHub URL
     let username: string;
@@ -228,10 +237,10 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
         }
     }
 
-    const topRepos = [...repos]
+    const topReposPreAnalysis = [...repos]
         .sort((a, b) => b.stargazers_count - a.stargazers_count)
         .slice(0, 10)
-        .map((repo: any): RepoInfo => ({
+        .map((repo: any) => ({
             name: repo.full_name,
             description: repo.description,
             stars: repo.stargazers_count,
@@ -242,8 +251,10 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
     // 4. Perform Analysis with the Gemini API
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
+    const systemInstruction = "You are a friendly and professional career coach for software developers. Your analysis should be encouraging, insightful, and provide actionable advice. When generating summaries and suggestions, use a positive and supportive tone. When scoring, be objective and fair based on the data provided.";
+
     const prompt = `
-        You are an expert GitHub profile analyst. I will provide you with data about a user, including their profile information, a list of their top repositories, and their language usage. Your task is to analyze this information and return a comprehensive summary in JSON format.
+        Analyze the following GitHub profile data and provide a comprehensive summary, including gamification elements, adhering strictly to the provided JSON schema.
 
         User Profile:
         - Username: ${user.login}
@@ -254,7 +265,7 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
         - Member Since: ${user.created_at}
 
         Top Repositories (by stars):
-        ${topRepos.map(r => `- ${r.name} (Stars: ${r.stars}, Language: ${r.language}): ${r.description}`).join('\n')}
+        ${topReposPreAnalysis.map(r => `- ${r.name} (Stars: ${r.stars}, Language: ${r.language}): ${r.description}`).join('\n')}
 
         Language Distribution (by count of repositories):
         ${JSON.stringify(languageDistribution, null, 2)}
@@ -263,18 +274,39 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
 
         Your analysis should include:
         - profileSummary: A concise, one-paragraph summary of the developer's profile. Mention their apparent interests, activity level, and the types of projects they work on.
-        - starRating: A rating from 1.0 to 5.0, assessing the overall quality and impact of the profile based on the provided data (repo popularity, activity, profile completeness).
+        - starRating: A rating from 1.0 to 5.0, assessing the overall quality and impact of the profile based on the provided data.
         - mainExpertise: A list of 2-4 key areas of expertise (e.g., "Frontend Development", "React", "Data Science", "Go").
+        - healthScore: A score from 0 to 100 for the profile's "health". Base this on a holistic view of:
+            1. Profile Completeness (20% weight): Presence and quality of name, bio, avatar.
+            2. Repository Quality (40% weight): Number of repos, use of descriptions, star count, code quality reflected in top repos.
+            3. Activity & Consistency (20% weight): Number of public repos, recency of pushes (inferred from sorted repo list).
+            4. Community Engagement (20% weight): Number of followers and total stars.
+        - suggestions: A list of 2-3 actionable tips for how this developer could improve their GitHub profile.
+        - topRepos (updated): For each of the top repositories provided, add a 'pitch' (a compelling one-liner describing the project's purpose) and a 'qualityScore' (a 1-100 score based on its description, language, and stars).
     `;
 
     const schema = {
         type: Type.OBJECT,
         properties: {
-            profileSummary: { type: Type.STRING, description: "A summary of the developer's profile." },
-            starRating: { type: Type.NUMBER, description: "A quality rating from 1.0 to 5.0." },
-            mainExpertise: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of key expertise areas." },
+            profileSummary: { type: Type.STRING },
+            starRating: { type: Type.NUMBER },
+            mainExpertise: { type: Type.ARRAY, items: { type: Type.STRING } },
+            healthScore: { type: Type.NUMBER },
+            suggestions: { type: Type.ARRAY, items: { type: Type.STRING } },
+            topRepos: {
+                type: Type.ARRAY,
+                items: {
+                    type: Type.OBJECT,
+                    properties: {
+                        name: { type: Type.STRING },
+                        pitch: { type: Type.STRING },
+                        qualityScore: { type: Type.NUMBER },
+                    },
+                    required: ['name', 'pitch', 'qualityScore'],
+                }
+            }
         },
-        required: ['profileSummary', 'starRating', 'mainExpertise'],
+        required: ['profileSummary', 'starRating', 'mainExpertise', 'healthScore', 'suggestions', 'topRepos'],
     };
 
     try {
@@ -282,12 +314,51 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
+                systemInstruction: systemInstruction,
                 responseMimeType: "application/json",
                 responseSchema: schema,
             },
         });
 
         const analysis = JSON.parse(response.text);
+
+        // Merge AI analysis back into topRepos data
+        const topRepos: RepoInfo[] = topReposPreAnalysis.map(repo => {
+            const aiRepoData = analysis.topRepos.find((r: any) => r.name === repo.name);
+            return {
+                ...repo,
+                pitch: aiRepoData?.pitch || 'An interesting project.',
+                qualityScore: aiRepoData?.qualityScore || 60,
+            };
+        });
+
+        // Calculate badges
+        const earnedBadges: Badge[] = ALL_BADGES.map(badge => {
+            let earned = false;
+            switch(badge.id) {
+                case 'POLYGLOT':
+                    if (Object.keys(languageDistribution).length >= 5) earned = true;
+                    break;
+                case 'STAR_GAZER':
+                    if (repos.some((r:any) => r.stargazers_count >= 100)) earned = true;
+                    break;
+                case 'COMMIT_MACHINE':
+                    // This is a placeholder as we don't fetch detailed commit history.
+                    // In a real app, you'd use the GraphQL API to get contributions.
+                    if (user.public_repos > 50) earned = true; // Simple proxy
+                    break;
+                case 'PERFECT_README':
+                    if (topRepos.some(r => r.qualityScore >= 90)) earned = true;
+                    break;
+                case 'COMMUNITY_BUILDER':
+                    if (repos.some((r:any) => r.forks_count >= 25)) earned = true;
+                    break;
+                case 'TOP_10_PERCENT':
+                    if (analysis.healthScore >= 90) earned = true;
+                    break;
+            }
+            return { ...badge, earned };
+        });
 
         return {
             login: user.login,
@@ -304,6 +375,9 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
             profileSummary: analysis.profileSummary || 'No summary generated.',
             starRating: analysis.starRating || 0,
             mainExpertise: analysis.mainExpertise || [],
+            healthScore: analysis.healthScore || 0,
+            badges: earnedBadges,
+            suggestions: analysis.suggestions || [],
         };
 
     } catch (err) {

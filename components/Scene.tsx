@@ -1,7 +1,6 @@
-import * as React from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Mesh, Color, PointLight } from 'three';
-import { useMemo, useRef, useState } from 'react';
 
 // Reusable geometries
 const geometries = [

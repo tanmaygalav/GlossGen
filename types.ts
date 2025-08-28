@@ -20,6 +20,15 @@ export interface AnalysisResult {
   starRating: number;
 }
 
+// --- NEW & UPDATED TYPES FOR GAMIFICATION & ENHANCED UI ---
+
+export interface Badge {
+    id: 'POLYGLOT' | 'STAR_GAZER' | 'COMMIT_MACHINE' | 'PERFECT_README' | 'COMMUNITY_BUILDER' | 'TOP_10_PERCENT';
+    name: string;
+    description: string;
+    earned: boolean;
+}
+
 // Types for Profile Analysis
 export interface RepoInfo {
     name: string;
@@ -27,6 +36,9 @@ export interface RepoInfo {
     stars: number;
     language: string | null;
     url: string;
+    // New AI-powered fields
+    pitch: string;
+    qualityScore: number; // A score from 1-100
 }
 
 export interface LanguageDistribution {
@@ -47,8 +59,12 @@ export interface ProfileAnalysisResult {
     topRepos: RepoInfo[];
     languageDistribution: LanguageDistribution;
     
-    // From Gemini API
+    // From Gemini API (enhanced)
     profileSummary: string;
     starRating: number;
     mainExpertise: string[];
+    // Gamification Layer
+    healthScore: number; // 0-100
+    badges: Badge[];
+    suggestions: string[]; // Actionable tips for improvement
 }
