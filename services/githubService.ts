@@ -114,7 +114,7 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
     );
 
     // 3. Perform Analysis with the Gemini API
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.API_KEY });
 
     const prompt = `
         You are an expert code analyst. I will provide you with the file structure and the content of several key source files from a GitHub repository. Your task is to analyze this information and return a comprehensive summary in JSON format.
@@ -249,7 +249,7 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
         }));
 
     // 4. Perform Analysis with the Gemini API
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.API_KEY });
     
     const systemInstruction = "You are a friendly and professional career coach for software developers. Your analysis should be encouraging, insightful, and provide actionable advice. When generating summaries and suggestions, use a positive and supportive tone. When scoring, be objective and fair based on the data provided.";
 
