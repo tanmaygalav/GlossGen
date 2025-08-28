@@ -1,6 +1,34 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Mesh, Color, PointLight } from 'three';
+// FIX: The errors about JSX elements like <mesh> not existing are likely due to TypeScript
+// not picking up @react-three/fiber's JSX namespace augmentations in this environment.
+// We can use `extend` to manually register the required components from `three`.
+import { Canvas, useFrame, useThree, extend } from '@react-three/fiber';
+import {
+  Mesh,
+  Color,
+  PointLight,
+  IcosahedronGeometry,
+  TorusKnotGeometry,
+  TorusGeometry,
+  DodecahedronGeometry,
+  MeshStandardMaterial,
+  AmbientLight,
+} from 'three';
+
+// FIX: Manually extend the R3F catalog with the used three.js objects
+// to resolve TypeScript errors when JSX augmentations are not picked up.
+// This registers them as valid JSX elements for react-three-fiber.
+extend({
+  mesh: Mesh,
+  icosahedronGeometry: IcosahedronGeometry,
+  torusKnotGeometry: TorusKnotGeometry,
+  torusGeometry: TorusGeometry,
+  dodecahedronGeometry: DodecahedronGeometry,
+  meshStandardMaterial: MeshStandardMaterial,
+  ambientLight: AmbientLight,
+  pointLight: PointLight,
+});
+
 
 // Reusable geometries
 const geometries = [

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Scene from '../components/Scene';
 
@@ -12,6 +12,10 @@ const HomePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'GlossGen - AI Code Analyzer';
+  }, []);
   
   const isRepoMode = analysisType === 'repo';
   const currentUrl = isRepoMode ? repoUrl : profileUrl;

@@ -96,13 +96,18 @@ const ResultsPage: React.FC = () => {
       return;
     }
 
+    const repoNameForTitle = repoUrl.split('/').slice(-2).join('/');
+    document.title = `Analyzing ${repoNameForTitle}... | GlossGen`;
+
     const fetchGlossary = async () => {
       setIsLoading(true);
       setError(null);
       try {
         const result = await analyzeRepo(repoUrl);
         setAnalysisResult(result);
+        document.title = `Analysis for ${result.repoName} | GlossGen`;
       } catch (err) {
+        document.title = 'Analysis Failed | GlossGen';
         if (err instanceof Error) {
             setError(err.message);
         } else {
@@ -112,8 +117,12 @@ const ResultsPage: React.FC = () => {
         setIsLoading(false);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
     fetchGlossary();
+
+    return () => {
+        document.title = 'GlossGen - AI Code Analyzer';
+    };
   }, [repoUrl]);
   
   const toggleFilter = (filter: GlossaryItemType) => {

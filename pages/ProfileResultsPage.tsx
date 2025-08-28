@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 // FIX: Import Transition type from framer-motion to explicitly type the transition object.
@@ -88,13 +89,18 @@ const ProfileResultsPage: React.FC = () => {
             return;
         }
 
+        const profileNameForTitle = profileUrl.split('/').pop() || 'profile';
+        document.title = `Analyzing ${profileNameForTitle}... | GlossGen`;
+
         const fetchProfileAnalysis = async () => {
             setIsLoading(true);
             setError(null);
             try {
                 const result = await analyzeProfile(profileUrl);
                 setAnalysisResult(result);
+                document.title = `Profile for ${result.name || result.login} | GlossGen`;
             } catch (err) {
+                document.title = 'Analysis Failed | GlossGen';
                 if (err instanceof Error) {
                     setError(err.message);
                 } else {
@@ -105,6 +111,10 @@ const ProfileResultsPage: React.FC = () => {
             }
         };
         fetchProfileAnalysis();
+
+        return () => {
+            document.title = 'GlossGen - AI Code Analyzer';
+        };
     }, [profileUrl]);
 
     if (isLoading) {
