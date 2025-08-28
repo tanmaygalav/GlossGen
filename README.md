@@ -43,10 +43,10 @@ It provides **profile health scores, repo breakdowns, AI-powered summaries, and 
 ### Installation  
 ```bash
 # Clone the repo
-git clone https://github.com/<your-username>/<repo-name>.git
+git clone https://github.com/Vitiantanmay/glossgen.git
 
 # Navigate into project
-cd <repo-name>
+cd glossgen
 
 # Install dependencies
 npm install
@@ -79,4 +79,4 @@ Contributions are welcome!
 ---
 
 ## 📜 License  
-MIT License © 2024 [Your Name]  
+MIT License © 2024 [Tanmay Galav]  
