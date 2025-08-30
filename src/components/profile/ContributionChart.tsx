@@ -72,7 +72,7 @@ const ContributionChart: React.FC<{ data: ContributionDay[] }> = ({ data }) => {
 
     return (
         <div className="font-mono text-xs text-gray-400">
-            <div className="relative overflow-x-auto pb-4">
+            <div className="relative overflow-hidden pb-4">
                  <div className="flex justify-start gap-1 ml-6 mb-2">
                     {monthLabels.map(m => (
                         <div key={m.name} className="absolute" style={{ left: `${(m.index * 16)}px`}}>
