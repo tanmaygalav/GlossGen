@@ -79,4 +79,4 @@ Contributions are welcome!
 ---
 
 ## 📜 License  
-MIT License © 2024 [Your Name]  
+MIT License © 2024 [Tanmay Galav]  
