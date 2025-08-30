@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      outDir: 'dist',
+      outDir: 'dist', // Netlify will serve this
       emptyOutDir: true,
     },
   };
