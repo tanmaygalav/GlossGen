@@ -1,82 +1,20 @@
-# GitHub Analyzer 🚀  
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-A modern web application that analyzes GitHub profiles and repositories, turning raw stats into meaningful insights with a sleek dashboard UI.  
-It provides **profile health scores, repo breakdowns, AI-powered summaries, and gamification badges** to make exploring developer activity engaging and fun.  
+# Run and deploy your AI Studio app
 
----
+This contains everything you need to run your app locally.
 
-## ✨ Features  
-- **Profile Insights**:  
-  - AI-generated summary of a developer’s GitHub presence  
-  - Followers, repos, activity, and top expertise tags  
+View your app in AI Studio: https://ai.studio/apps/drive/1SRv7Hv-mZER7NzVhiTYSCx-LGMj3oTVc
 
-- **Gamification**:  
-  - 🔥 **Profile Health Score** – composite rating based on activity, code quality, collaboration, and documentation  
-  - 🏆 **Badges** – unlockable achievements like *Early Committer*, *Refactor Hero*, *ReadMe Rockstar*  
+## Run Locally
 
-- **Repository Analysis**:  
-  - Repo cards with description, tech stack, rating, and AI one-liner pitch  
-  - File structure explorer with collapsible tree view  
-  - Commit count, activity trends, and collaboration insights  
+**Prerequisites:**  Node.js
 
-- **UI/UX**:  
-  - Dark-themed dashboard inspired by GitHub & Vercel  
-  - Responsive design with TailwindCSS + smooth animations via Framer Motion  
-  - Interactive components, hover effects, and glowing highlights  
 
----
-
-## 🛠 Tech Stack  
-- **Frontend**: React, TypeScript, Vite, Tailwind CSS, Framer Motion  
-- **3D/Visualization**: Three.js, @react-three/fiber  
-- **AI Integration**: Google Gemini API (for summaries & insights)  
-- **Routing & Structure**: react-router-dom with modular pages/components  
-
----
-
-## 🚀 Getting Started  
-
-### Prerequisites  
-- Node.js (>= 18)  
-- npm or yarn  
-
-### Installation  
-```bash
-# Clone the repo
-git clone https://github.com/Vitiantanmay/glossgen.git
-
-# Navigate into project
-cd glossgen
-
-# Install dependencies
-npm install
-```
-
-### Run the Development Server  
-```bash
-npm run dev
-```
-
-The app will be live at `http://localhost:5173/` (or as configured).  
-
----
-
-## 📊 Future Roadmap  
-- [ ] Export profile analysis as PDF/Markdown  
-- [ ] Add peer benchmarking against trending repos  
-- [ ] Seasonal & limited-time badges (e.g., *Hacktoberfest Hacker*)  
-- [ ] Resume/portfolio export tool  
-
----
-
-## 🤝 Contributing  
-Contributions are welcome!  
-- Fork the repo  
-- Create a new branch (`feature/amazing-feature`)  
-- Commit your changes  
-- Open a Pull Request  
-
----
-
-## 📜 License  
-MIT License © 2024 [Tanmay Galav]  
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

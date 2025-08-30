@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 // FIX: Import Transition type from framer-motion to explicitly type the transition object.
 import { motion, AnimatePresence, type Transition } from 'framer-motion';
@@ -35,7 +35,7 @@ const TabButton: React.FC<{ active: boolean; onClick: () => void; children: Reac
     return (
         <button
             onClick={onClick}
-            className={`relative px-4 py-2 text-sm font-bold transition-colors duration-300 rounded-md focus:outline-none ${active ? 'text-white' : 'text-gray-400 hover:text-white'}`}
+            className={`relative px-4 py-2 text-sm font-bold transition-colors duration-300 rounded-md focus:outline-none whitespace-nowrap ${active ? 'text-white' : 'text-gray-400 hover:text-white'}`}
         >
             {children}
             {active && (
@@ -71,6 +71,41 @@ const listContainerVariants = {
         },
     },
 };
+
+// --- NEW HELPFUL RESOURCES LOGIC ---
+interface ResourceLink {
+    title: string;
+    url: string;
+    keywords: string[];
+}
+
+const HELPFUL_RESOURCES: ResourceLink[] = [
+    {
+        title: 'Managing your profile README',
+        url: 'https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme',
+        keywords: ['readme', 'profile readme'],
+    },
+    {
+        title: 'Personalizing your profile bio',
+        url: 'https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/personalizing-your-profile#adding-a-bio-to-your-profile',
+        keywords: ['bio', 'biography', 'description'],
+    },
+    {
+        title: 'Pinning items to your profile',
+        url: 'https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/pinning-items-to-your-profile',
+        keywords: ['pin', 'pinned', 'highlight', 'showcase'],
+    },
+    {
+        title: 'How to Contribute to Open Source',
+        url: 'https://opensource.guide/how-to-contribute/',
+        keywords: ['contribute', 'open source', 'community', 'pull request'],
+    },
+    {
+        title: 'Classifying your repository with topics',
+        url: 'https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics',
+        keywords: ['topics', 'tags', 'classify', 'discoverable'],
+    },
+];
 
 const ProfileResultsPage: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -116,6 +151,21 @@ const ProfileResultsPage: React.FC = () => {
             document.title = 'GlossGen - AI Code Analyzer';
         };
     }, [profileUrl]);
+    
+    const relevantResources = useMemo(() => {
+        if (!analysisResult?.suggestions) return [];
+
+        const matchedResources = new Set<ResourceLink>();
+        const suggestionsText = analysisResult.suggestions.join(' ').toLowerCase();
+
+        HELPFUL_RESOURCES.forEach(resource => {
+            if (resource.keywords.some(keyword => suggestionsText.includes(keyword))) {
+                matchedResources.add(resource);
+            }
+        });
+
+        return Array.from(matchedResources);
+    }, [analysisResult?.suggestions]);
 
     if (isLoading) {
         return <div className="min-h-screen flex items-center justify-center"><LoadingSpinner /></div>;
@@ -127,7 +177,7 @@ const ProfileResultsPage: React.FC = () => {
                 <div>
                     <h2 className="text-2xl text-red-500">Analysis Failed</h2>
                     <p className="text-gray-400 mt-2">{error}</p>
-                    <a href="/#" className="mt-6 inline-block bg-accent text-black font-bold p-3 px-6 hover:bg-orange-400 transition-colors rounded-lg">Try Again</a>
+                    <a href="/#/analyze" className="mt-6 inline-block bg-accent text-black font-bold p-3 px-6 hover:bg-orange-400 transition-colors rounded-lg">Try Again</a>
                 </div>
             </div>
         );
@@ -142,7 +192,7 @@ const ProfileResultsPage: React.FC = () => {
 
     return (
         <div className="max-w-7xl mx-auto p-4 sm:p-8 font-sans">
-            <header className="mb-8 flex justify-between items-center">
+            <header className="mb-8 flex flex-wrap justify-between items-center gap-4">
                 <Link to="/" className="text-2xl font-bold tracking-tighter hover:text-accent transition-colors">GlossGen</Link>
                 <button 
                     onClick={() => navigate(-1)} 
@@ -176,7 +226,7 @@ const ProfileResultsPage: React.FC = () => {
                     </div>
                 </div>
 
-                <nav className="border-b border-white/10 mb-8 flex items-center gap-4">
+                <nav className="border-b border-white/10 mb-8 flex items-center gap-4 overflow-x-auto pb-2">
                     <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')}>Overview</TabButton>
                     <TabButton active={activeTab === 'repositories'} onClick={() => setActiveTab('repositories')}>Repositories</TabButton>
                     <TabButton active={activeTab === 'achievements'} onClick={() => setActiveTab('achievements')}>Achievements</TabButton>
@@ -209,6 +259,26 @@ const ProfileResultsPage: React.FC = () => {
                                           ))}
                                         </ul>
                                     </div>
+                                    {relevantResources.length > 0 && (
+                                        <motion.div 
+                                            className="border border-white/10 bg-gray-950/40 backdrop-blur-sm p-6 rounded-xl shadow-lg"
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: 0.2 }}
+                                        >
+                                            <h2 className="text-sm font-bold text-gray-500 tracking-wider uppercase mb-4">Helpful Resources</h2>
+                                            <ul className="space-y-3">
+                                              {relevantResources.map((resource) => (
+                                                <li key={resource.url}>
+                                                  <a href={resource.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-start gap-3 group">
+                                                    <svg className="w-5 h-5 text-gray-400 group-hover:text-accent mt-0.5 flex-shrink-0 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                                    <span className="text-gray-300 group-hover:text-white transition-colors">{resource.title}</span>
+                                                  </a>
+                                                </li>
+                                              ))}
+                                            </ul>
+                                        </motion.div>
+                                    )}
                                 </div>
                                 <div className="space-y-8">
                                      <div className="border border-white/10 bg-gray-950/40 backdrop-blur-sm p-6 rounded-xl shadow-lg text-center">
@@ -243,7 +313,7 @@ const ProfileResultsPage: React.FC = () => {
                             <div>
                                <h2 className="text-2xl font-bold mb-6">Badges</h2>
                                <motion.div 
-                                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
                                   variants={listContainerVariants}
                                   initial="hidden"
                                   animate="visible"
@@ -256,7 +326,7 @@ const ProfileResultsPage: React.FC = () => {
                 </AnimatePresence>
             </main>
             <footer className="text-center py-8 mt-12 border-t border-white/10 text-gray-600 text-xs font-mono">
-                <p>&copy; {new Date().getFullYear()} Tanmay galav. All Rights Reserved.</p>
+                <p>&copy; {new Date().getFullYear()} <a href="https://github.com/Vitiantanmay" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">Tanmay galav</a>. All Rights Reserved.</p>
             </footer>
         </div>
     );

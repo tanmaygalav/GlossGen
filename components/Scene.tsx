@@ -1,7 +1,4 @@
 import React, { useMemo, useRef, useState } from 'react';
-// FIX: The errors about JSX elements like <mesh> not existing are likely due to TypeScript
-// not picking up @react-three/fiber's JSX namespace augmentations in this environment.
-// We can use `extend` to manually register the required components from `three`.
 import { Canvas, useFrame, useThree, extend } from '@react-three/fiber';
 import {
   Mesh,
@@ -15,9 +12,8 @@ import {
   AmbientLight,
 } from 'three';
 
-// FIX: Manually extend the R3F catalog with the used three.js objects
-// to resolve TypeScript errors when JSX augmentations are not picked up.
-// This registers them as valid JSX elements for react-three-fiber.
+// FIX: Manually extend the react-three-fiber JSX namespace with three.js objects
+// to resolve TypeScript errors for non-standard JSX elements like `<mesh>`.
 extend({
   mesh: Mesh,
   icosahedronGeometry: IcosahedronGeometry,

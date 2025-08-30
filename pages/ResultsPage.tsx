@@ -190,7 +190,7 @@ const ResultsPage: React.FC = () => {
         <div>
           <h2 className="text-2xl text-red-500">Analysis Failed</h2>
           <p className="text-gray-400 mt-2">{error}</p>
-          <a href="/#" className="mt-6 inline-block bg-accent text-black font-bold p-3 px-6 hover:bg-white transition-colors rounded-lg">
+          <a href="/#/analyze" className="mt-6 inline-block bg-accent text-black font-bold p-3 px-6 hover:bg-white transition-colors rounded-lg">
             Try Again
           </a>
         </div>
@@ -200,7 +200,7 @@ const ResultsPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-8">
-      <header className="mb-8 flex justify-between items-center">
+      <header className="mb-8 flex flex-wrap justify-between items-center gap-4">
         <Link to="/" className="text-2xl font-bold tracking-tighter hover:text-accent transition-colors">
             GlossGen
         </Link>
@@ -229,7 +229,7 @@ const ResultsPage: React.FC = () => {
                     placeholder="Search by name or path..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="flex-grow bg-black border border-gray-800 text-white p-3 focus:outline-none focus:border-accent font-mono text-sm rounded-lg"
+                    className="flex-grow bg-black border border-gray-800 text-white p-2 md:p-3 focus:outline-none focus:border-accent font-mono text-sm rounded-lg"
                 />
                 <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm text-gray-500 hidden md:block">Filter:</span>
@@ -237,7 +237,7 @@ const ResultsPage: React.FC = () => {
                         <button
                             key={type}
                             onClick={() => toggleFilter(type)}
-                            className={`border px-3 py-2 text-sm transition-colors rounded-md ${
+                            className={`border px-3 py-1.5 md:py-2 text-sm transition-colors rounded-md ${
                                 activeFilters.includes(type)
                                     ? 'bg-accent text-black border-accent'
                                     : 'bg-black text-white border-gray-800 hover:border-gray-600'
@@ -249,7 +249,7 @@ const ResultsPage: React.FC = () => {
                 </div>
                 <button
                     onClick={exportToMarkdown}
-                    className="bg-gray-800 text-white font-bold p-3 px-6 hover:bg-gray-700 focus:outline-none transition-colors border border-gray-800 rounded-lg"
+                    className="bg-gray-800 text-white font-bold py-2 md:py-3 px-6 hover:bg-gray-700 focus:outline-none transition-colors border border-gray-800 rounded-lg"
                 >
                     Export MD
                 </button>
@@ -278,7 +278,7 @@ const ResultsPage: React.FC = () => {
         </div>
       </main>
       <footer className="text-center py-8 mt-12 border-t border-gray-800 text-gray-600 text-xs font-mono">
-        <p>&copy; {new Date().getFullYear()} Tanmay galav. All Rights Reserved.</p>
+        <p>&copy; {new Date().getFullYear()} <a href="https://github.com/Vitiantanmay" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">Tanmay galav</a>. All Rights Reserved.</p>
       </footer>
     </div>
   );

@@ -26,11 +26,11 @@ const RepoCard: React.FC<{ repo: RepoInfo; languageColor: string }> = ({ repo, l
             variants={cardVariants}
         >
             <div className="flex-grow">
-                <div className="flex justify-between items-start mb-2">
-                    <span className="text-accent font-bold font-mono truncate pr-4 group-hover:text-orange-400 transition-colors">{repo.name}</span>
-                    <div className="flex items-center gap-2 text-sm text-gray-400 flex-shrink-0">
+                <div className="flex items-baseline gap-3 mb-2 min-w-0">
+                    <h3 className="text-accent font-bold font-mono truncate group-hover:text-orange-400 transition-colors">{repo.name}</h3>
+                    <div className="flex items-center gap-1 text-sm text-gray-400 flex-shrink-0" title={`${repo.stars.toLocaleString()} stars`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 fill-current text-yellow-500"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 18.896l-7.416 4.517 1.48-8.279-6.064-5.828 8.332-1.151z"/></svg>
                         <span>{repo.stars.toLocaleString()}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 18.896l-7.416 4.517 1.48-8.279-6.064-5.828 8.332-1.151z"/></svg>
                     </div>
                 </div>
                 <p className="text-sm font-semibold text-gray-200 mb-2 italic">{`"${repo.pitch}"`}</p>
