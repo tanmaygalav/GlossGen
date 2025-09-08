@@ -102,7 +102,7 @@ const HomePage: React.FC = () => {
       </div>
 
       <footer className="relative z-10 text-center py-8 border-t border-white/10 text-gray-600 text-xs font-mono">
-        <p>&copy; {new Date().getFullYear()} <a href="https://github.com/Vitiantanmay" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">Tanmay galav</a>. All Rights Reserved.</p>
+        <p>&copy; {new Date().getFullYear()} <a href="https://github.com/tanmaygalav" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">Tanmay galav</a>. All Rights Reserved.</p>
       </footer>
     </div>
   );
