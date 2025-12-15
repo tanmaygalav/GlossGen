@@ -1,5 +1,8 @@
 # GitHub Analyzer 🚀  
 
+<img width="1900" height="969" alt="image" src="https://github.com/user-attachments/assets/549bcefe-c2c4-4e0f-8f04-37d583906fce" />
+
+
 A modern web application that analyzes GitHub profiles and repositories, turning raw stats into meaningful insights with a sleek dashboard UI.  
 It provides **profile health scores, repo breakdowns, AI-powered summaries, and gamification badges** to make exploring developer activity engaging and fun.  
 
