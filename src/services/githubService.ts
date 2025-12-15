@@ -160,15 +160,17 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
       required: ['techStack', 'fileStructureSummary', 'starRating', 'items'],
     };
 
+    // ... inside analyzeRepo function ...
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.0-flash", // Change from "gemini-2.5-flash"
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
                 responseSchema: schema,
             },
         });
+// ...
 
         const analysis = JSON.parse(response.text);
 
@@ -322,9 +324,10 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
         required: ['profileSummary', 'starRating', 'mainExpertise', 'healthScore', 'suggestions', 'topRepos'],
     };
 
+    // ... inside analyzeProfile function ...
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.0-flash", // Change from "gemini-2.5-flash"
             contents: prompt,
             config: {
                 systemInstruction: systemInstruction,
@@ -332,6 +335,7 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
                 responseSchema: schema,
             },
         });
+// ...
 
         const analysis = JSON.parse(response.text);
 
