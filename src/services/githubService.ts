@@ -29,7 +29,7 @@ const selectRepresentativeFiles = (files: { path: string; type: string }[]): str
     return files
         .filter(file => file.type === 'blob' && isSourceFile(file.path) && isNotExcluded(file.path))
         .map(file => file.path)
-        .slice(0, 15); // Limit to a reasonable number of files
+        .slice(0, 5); // Limit to a reasonable number of files
 };
 
 
@@ -163,7 +163,7 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
     // ... inside analyzeRepo function ...
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.0-flash", // Change from "gemini-2.5-flash"
+            model: "gemini-1.5-flash", // Change from "gemini-2.5-flash"
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -327,7 +327,7 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
     // ... inside analyzeProfile function ...
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.0-flash", // Change from "gemini-2.5-flash"
+            model: "gemini-1.5-flash", // Change from "gemini-2.5-flash"
             contents: prompt,
             config: {
                 systemInstruction: systemInstruction,
