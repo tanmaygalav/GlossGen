@@ -163,7 +163,7 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
     // ... inside analyzeRepo function ...
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash", // Change from "gemini-2.5-flash"
+            model: "gemini-2.5-flash", // Change from "gemini-2.5-flash"
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -327,7 +327,7 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
     // ... inside analyzeProfile function ...
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash", // Change from "gemini-2.5-flash"
+            model: "gemini-2.5-flash", // Change from "gemini-2.5-flash"
             contents: prompt,
             config: {
                 systemInstruction: systemInstruction,
