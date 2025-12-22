@@ -190,7 +190,7 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
     try {
         // [FIX 1] Updated model name here
         const response = await ai.models.generateContent({
-            model: "gemini-3-flash", 
+            model: "gemini-1.5-flash-001", 
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -360,7 +360,7 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
     try {
         // [FIX 2] Updated model name here (This was likely the issue!)
         const response = await ai.models.generateContent({
-            model: "gemini-3-flash", 
+            model: "gemini-1.5-flash-001", 
             contents: prompt,
             config: {
                 systemInstruction: systemInstruction,
