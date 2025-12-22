@@ -3,7 +3,7 @@ import { type AnalysisResult, type ProfileAnalysisResult, type LanguageDistribut
 
 // Access environment variables
 const GITHUB_TOKEN = process.env.VITE_GITHUB_TOKEN || ''; 
-const GEMINI_API_KEY = process.env.API_KEY || '';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 
 /**
  * Helper to generate consistent headers for GitHub API calls.
