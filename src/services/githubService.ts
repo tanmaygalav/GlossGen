@@ -187,7 +187,7 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash", // Updated to current model name
+            model: "gemma-3-4b", // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -332,7 +332,7 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash", 
+            model: "gemma-3-4b", // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             contents: prompt,
             config: {
                 systemInstruction: systemInstruction,
