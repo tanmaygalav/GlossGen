@@ -102,7 +102,7 @@ export const analyzeRepo = async (repoUrl: string): Promise<AnalysisResult> => {
     // 2. AI Analysis (Using standard @google/generative-ai)
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         systemInstruction: "You are an expert code analyst. Analyze the provided code and return a JSON object."
     });
 
@@ -227,7 +227,7 @@ export const analyzeProfile = async (profileUrl: string): Promise<ProfileAnalysi
     // AI Analysis (Using standard @google/generative-ai)
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         systemInstruction: "You are a friendly career coach for developers."
     });
 
