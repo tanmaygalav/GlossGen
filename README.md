@@ -1,6 +1,6 @@
 # GitHub Analyzer 🚀  
 
-<img width="1900" height="969" alt="image" src="https://github.com/user-attachments/assets/549bcefe-c2c4-4e0f-8f04-37d583906fce" />
+<img width="1900" height="969" alt="GlossGen" src="https://github.com/user-attachments/assets/549bcefe-c2c4-4e0f-8f04-37d583906fce" />
 
 
 A modern web application that analyzes GitHub profiles and repositories, turning raw stats into meaningful insights with a sleek dashboard UI.  
@@ -14,8 +14,8 @@ It provides **profile health scores, repo breakdowns, AI-powered summaries, and 
   - Followers, repos, activity, and top expertise tags  
 
 - **Gamification**:  
-  - 🔥 **Profile Health Score** – composite rating based on activity, code quality, collaboration, and documentation  
-  - 🏆 **Badges** – unlockable achievements like *Early Committer*, *Refactor Hero*, *ReadMe Rockstar*  
+  -  **Profile Health Score** – composite rating based on activity, code quality, collaboration, and documentation  
+  -  **Badges** – unlockable achievements like *Early Committer*, *Refactor Hero*, *ReadMe Rockstar*  
 
 - **Repository Analysis**:  
   - Repo cards with description, tech stack, rating, and AI one-liner pitch  
