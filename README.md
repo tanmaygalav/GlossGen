@@ -78,7 +78,6 @@ Contributions are welcome!
 - Create a new branch (`feature/amazing-feature`)  
 - Commit your changes  
 - Open a Pull Request  
-
 ---
 
 ## 📜 License  
