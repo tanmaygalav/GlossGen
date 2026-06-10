@@ -40,7 +40,7 @@ It provides **profile health scores, repo breakdowns, AI-powered summaries, and 
 ## 🚀 Getting Started  
 
 ### Prerequisites  
-- Node.js (>= 18)  
+- Node.js
 - npm or yarn  
 
 ### Installation  
@@ -67,7 +67,7 @@ The app will be live at `http://localhost:5173/` (or as configured).
 ## 📊 Future Roadmap  
 - [ ] Export profile analysis as PDF/Markdown  
 - [ ] Add peer benchmarking against trending repos  
-- [ ] Seasonal & limited-time badges (e.g., *Hacktoberfest Hacker*)  
+- [ ] Seasonal & limited time badges (e.g., *Hacktoberfest Hacker*)  
 - [ ] Resume/portfolio export tool  
 
 ---
